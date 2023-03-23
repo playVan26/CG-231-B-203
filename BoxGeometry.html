@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Vanessa Alejandra Guillén</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script type="module">
+			import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+            
+			//Creacion de escena y camara
+
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+            //Aplicacion de 2 luces direcion a la escena
+
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 3 );
+            directionalLight.position.set(0, 0, 50);
+            scene.add( directionalLight );
+
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 3 );
+            directionalLight.position.set(0, 0, -50);
+            scene.add( directionalLight );
+		
+            //Se crea el arreglo de tamaño de los objetos
+
+			const escala = [[1,1,1], [1,1,1], [1.5,1.5,1.5]];
+            var GEO = [];
+            
+            GEO.push(new THREE.BoxGeometry(escala[0][0]));
+            GEO.push(new THREE.ConeGeometry(escala[1][0]));
+            GEO.push(new THREE.SphereGeometry(escala[2][0]));
+            
+			//Creacion del arreglo de color y material de los objetos
+
+            const color = [{color:0x7FFF00}, {color:0xD2691E}, {color:0xD3D3D3}];     
+            const material=[new THREE.MeshLambertMaterial(color[0]),new THREE.MeshMatcapMaterial(color[1]),new THREE.MeshPhongMaterial(color[2])];
+            
+			//Creacion del arreglo cube donde se aplican los arreglos de geometria y material al objeto 
+
+            const cube =[];
+            for (let i=0; i<3; i++) 
+            {
+                cube.push(new THREE.Mesh(GEO[i], material[i]));
+            }
+
+			//Creaccion de arreglo que añade los objetos a la escena
+
+            for (let i=0; i<3; i++) {
+                scene.add( cube[i] );
+            }
+
+			//Desplazamiento en X de los objetos 
+
+            cube[1].position.x = 3;
+            cube[2].position.x = -3;
+  
+			//Posicion de la camara 
+
+			camera.position.z = 5;
+
+			//Funcion donde se le da el movimiento en los ejes a los objetos
+
+			function renderiza() 
+            {
+				requestAnimationFrame( renderiza );
+
+				cube[0].rotation.x+= 0.02;
+				cube[0].rotation.y+= 0.02;
+
+                cube[1].rotation.x+= 0.01;
+				cube[1].rotation.y+= 0.01;
+
+                cube[2].rotation.x+= 0.05;
+				cube[2].rotation.y+= 0.05;
+
+				renderer.render( scene, camera);
+			}
+			renderiza();
+		</script>
+	</body>
+</html>
